@@ -1,6 +1,7 @@
 import { StateCreator } from 'zustand';
 import { AuthSlice } from './auth-slice';
 import { getCombinedPosProfile, PosProfileCombined } from '../../lib/pos-profile-api';
+import { hasUryRole } from '../../lib/role-utils';
 
 interface RolePermission {
   name: string;
@@ -89,19 +90,27 @@ export const createConfigSlice: StateCreator<
     const { user } = get();
     const { allowedRoles } = get();
 
-    if (!user || !user.roles || !allowedRoles.length) {
+    if (!user || !user.roles) {
       set({ hasAccess: false });
+      return;
+    }
+
+    if (hasUryRole(user.roles)) {
+      set({ hasAccess: true, error: null });
+      return;
+    }
+
+    if (!allowedRoles.length) {
+      // If no explicit allowed roles are configured, allow access.
+      set({ hasAccess: true, error: null });
       return;
     }
 
     // Check if user has any of the allowed roles
     const hasAccess = user.roles.some(role => allowedRoles.includes(role));
-    set({ hasAccess });
+    set({ hasAccess, error: hasAccess ? null : 'You do not have permission to access this application.' });
 
     // If no access, we could redirect or show an error message
-    if (!hasAccess) {
-      set({ error: 'You do not have permission to access this application.' });
-    }
   },
 
   setAllowedRoles: (roles) => {

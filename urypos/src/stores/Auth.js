@@ -46,6 +46,14 @@ export const useAuthStore = defineStore("auth", {
     },
   },
   actions: {
+    hasUryRole(roles) {
+      const uryRoles = [
+        "URY Cashier Enabled",
+        "URY Captain Enabled",
+        "URY Manager",
+      ];
+      return Array.isArray(roles) && roles.some((role) => uryRoles.includes(role));
+    },
     //Login
     async login() {
       try {
@@ -111,6 +119,7 @@ export const useAuthStore = defineStore("auth", {
         .getDoc("User", this.sessionUser)
         .then((doc) => {
           this.userRole = doc.roles.map((item) => item.role);
+          const hasUryAccess = this.hasUryRole(this.userRole);
           const getPosProfile = {
             doctype: "POS Profile",
             name: this.invoiceData.posProfile,
@@ -121,9 +130,9 @@ export const useAuthStore = defineStore("auth", {
               var billingRoles = result.message.role_allowed_for_billing.map(
                 (role) => role.role
               );
-              this.cashier = billingRoles.some((role) =>
-                this.userRole.includes(role)
-              );
+              this.cashier =
+                hasUryAccess ||
+                billingRoles.some((role) => this.userRole.includes(role));
               if (this.cashier) {
                 this.menu.pickOrderType();
                 // this.menu.fetchItems();
@@ -133,21 +142,28 @@ export const useAuthStore = defineStore("auth", {
               var transferRoles = result.message.transfer_role_permissions.map(
                 (role) => role.role
               );
-              this.hasAccess = transferRoles.some((role) =>
-                this.userRole.includes(role)
-              );
+              this.hasAccess =
+                hasUryAccess ||
+                transferRoles.some((role) => this.userRole.includes(role));
               var restrictOrder =
                 result.message.role_restricted_for_table_order.map(
                   (role) => role.role
                 );
-              this.restrictTableOrder = restrictOrder.some((role) =>
-                this.userRole.includes(role)
-              );
+              this.restrictTableOrder =
+                !hasUryAccess &&
+                restrictOrder.some((role) => this.userRole.includes(role));
               this.viewAllStatus = result.message.view_all_status;
               this.removeTableOrderItem = result.message.remove_items;
               this.viewItemImage = result.message.show_image;
             })
-            .catch((error) => console.error(error));
+            .catch((error) => {
+              if (hasUryAccess) {
+                this.cashier = true;
+                this.hasAccess = true;
+                this.restrictTableOrder = false;
+              }
+              console.error(error);
+            });
         })
         .catch((error) => {
           console.error(error);

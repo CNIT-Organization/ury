@@ -3,6 +3,7 @@ import { useRootStore } from '../store/root-store';
 import { Button } from './ui/button';
 import { Spinner } from './ui/spinner';
 import { RefreshCw } from 'lucide-react';
+import { hasUryRole } from '../lib/role-utils';
 
 interface Props {
   children: React.ReactNode;
@@ -45,7 +46,9 @@ const AuthGuard: React.FC<Props> = ({ children }) => {
     );
   }
 
-  if (authError || configError) {
+  const hasUryAccess = hasUryRole(user?.roles);
+
+  if ((authError || configError) && !hasUryAccess) {
     return (
       <div className="flex items-center justify-center min-h-screen">
         <div className="text-center">
@@ -62,7 +65,7 @@ const AuthGuard: React.FC<Props> = ({ children }) => {
     return null;
   }
 
-  if (!posProfile) {
+  if (!posProfile && !hasUryAccess) {
     return (
       <div className="flex items-center justify-center min-h-screen">
         <div className="text-center">
@@ -74,7 +77,7 @@ const AuthGuard: React.FC<Props> = ({ children }) => {
     );
   }
 
-  if (!hasAccess) {
+  if (!hasAccess && !hasUryAccess) {
     return (
       <div className="flex items-center justify-center min-h-screen">
         <div className="text-center">
