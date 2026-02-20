@@ -2,7 +2,7 @@
 
     <header class="bg-white p-4 flex justify-between items-center">
     <div class="flex items-center">
-        <img :src="imagePath" alt="Logo" class="ml-20 w-40 h-15 mr-2">
+        <img :src="imagePath" alt="IBS Mosaic logo" class="ml-20 w-40 h-15 mr-2">
        
     </div>
     <div class="flex items-center">
@@ -22,7 +22,7 @@
 
 <script>
 
-import uriMosaicImage from "@/assets/logos/mosaic.jpg";
+import ibsLogo from "@/assets/logos/IBS.svg";
 // import KOT from './kot.vue';
 
 export default {
@@ -32,7 +32,7 @@ export default {
   },
   data() {
     return {
-      imagePath: uriMosaicImage,
+      imagePath: ibsLogo,
     };
   },
   methods:{

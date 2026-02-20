@@ -9,7 +9,7 @@
         <div class="mb-8 flex justify-center">
           <img
             :src="imagePath"
-            alt="URY POS logo"
+            alt="IBS POS logo"
             class="h-8 w-auto sm:h-8 lg:h-8"
           />
         </div>
@@ -102,7 +102,7 @@
 
 <script>
 import { useAuthStore } from "@/stores/Auth.js";
-import uriPosImage from "@/assets/logos/URY_POS.jpg";
+import ibsLogo from "@/assets/logos/IBS.svg";
 
 export default {
   setup() {
@@ -111,7 +111,7 @@ export default {
   },
   data() {
     return {
-      imagePath: uriPosImage,
+      imagePath: ibsLogo,
     };
   },
 };
