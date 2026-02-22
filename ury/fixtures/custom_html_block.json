@@ -3,13 +3,13 @@
     {
      "docstatus": 0,
      "doctype": "Custom HTML Block",
-     "html":"<a href=\"/pos\">\n    <img class=\"uryposlogo\" src=\"/assets/ury/Images/URY-POS.jpg\"/>\n</a>",
+    "html":"<a href=\"/pos\" class=\"ibspos-link\">IBS Pos</a>",
      "modified": "2025-07-24 16:50:40.049812",
     "name": "IBS Pos",
      "private": 0,
      "roles": [],
      "script": "",
-     "style": ".uryposlogo {\n    height: 37px;\n}"
+    "style": ".ibspos-link {\n    display: inline-flex;\n    align-items: center;\n    min-height: 37px;\n    font-size: 16px;\n    font-weight: 600;\n    color: #1f2937;\n    text-decoration: none;\n}\n\n.ibspos-link:hover {\n    text-decoration: underline;\n}"
     },
     {
      "docstatus": 0,
